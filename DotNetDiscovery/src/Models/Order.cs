@@ -10,9 +10,9 @@ class Order
     public Airport? requestedDestination {
         get {
             Airport airport;
-            Airport.TryParse(destinationString, out airport);
+            var success = Enum.TryParse(destinationString, out airport);
 
-            return airport;
+            return success ? airport : null;
         }
     }
 

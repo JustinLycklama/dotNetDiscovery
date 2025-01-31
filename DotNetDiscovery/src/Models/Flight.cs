@@ -9,13 +9,11 @@ class ScheduledFlight {
 
     int date;
 
-    public int currentLoad {
-        get { return orders.Count; }
-    }
-
     public readonly int capacity = 20; 
 
     private List<Order> orders = new List<Order>();
+    public List<Order> Orders { get => orders; private set => orders = value; }
+
 
     public ScheduledFlight(Airport departure, Airport destination, int date) {
         this.departure = departure;
@@ -27,12 +25,16 @@ class ScheduledFlight {
     }
 
     public void AddOrder(Order order) {
-        if (currentLoad >= capacity) {
+        if (orders.Count >= capacity) {
             throw new InvalidOperationException("You cannot add any more orders to this flight");
         }
 
         orders.Add(order);
         order.flight = this;
+    }
+
+    public static void ResetFlightNumbers() {
+        NextFlightNumber = 1;
     }
 
     public String Description() {

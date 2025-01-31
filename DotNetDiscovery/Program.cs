@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-class Program
+﻿class Program
 {
     static void Main()
     {
         SpeedyAir company = new SpeedyAir();
 
-        // company.PrintFlightSchedule();
+        company.PrintFlightSchedule();
         company.GenerateFlightItineraries();
     }
 }
@@ -32,8 +26,10 @@ class SpeedyAir {
 
         // Given no format for flight schedule data is given, I assume this means to load the given Scenario into memory.
 
+        ScheduledFlight.ResetFlightNumbers();
         List<ScheduledFlight> flights = flightService.LoadScenarioOne();
 
+        Console.WriteLine(" --- Scenario Flight Schedule --- ");
         foreach (ScheduledFlight flight in flights) {
             Console.WriteLine(flight.Description());
         }
@@ -49,10 +45,6 @@ class SpeedyAir {
 
         List<Order> orders = orderService.FetchOrders();
 
-        foreach (Order order in orders) {
-            Console.WriteLine(order.Description());
-        }
-
         // Since we are GENERATING flight itineraties, this means the Scenario should not be used.
         // The Orders are listed IN ORDER of priority. So if the first 60 orders are to Toronto, all 3 planes should go to Toronto the first day.
 
@@ -64,55 +56,61 @@ class SpeedyAir {
         // I'm going to say these are 'absolute' priorities. So The singular shipment to Toronto and Calgary will happen, along with 20 to Vancouver Today.
         // Tomorrow, the remaining 40 orders will go to Vancouver
 
+        ScheduledFlight.ResetFlightNumbers();
         List<ScheduledFlight> scheduledFlights = new List<ScheduledFlight>();
-        
-        List<Order> scheduledOrders = new List<Order>();
-        List<Order> unscheduledOrder = new List<Order>();
+
+        List<Order> unscheduledOrders = orders;
+        foreach (int day in new List<int>{1, 2}) {
+            var newFlights = scheduleFlightsForDate(unscheduledOrders, day, out unscheduledOrders);
+
+            scheduledFlights.AddRange(newFlights);            
+        }
+
+        Console.WriteLine(" --- Order Generated Itinerary --- ");
+        foreach (Order order in orders) {
+            Console.WriteLine(order.ScheduledDescription());
+        }
+    }
+
+    // Returns the list of flights scheduled for the day, and a list of Orders that was unable to be scheduled
+    private List<ScheduledFlight> scheduleFlightsForDate(List<Order> orders, int date, out List<Order> unscheduledOrders) {
+
+        List<ScheduledFlight> scheduledFlights = new List<ScheduledFlight>();
+        unscheduledOrders = new List<Order>();
 
         foreach (Order order in orders) {
             if (!order.requestedDestination.HasValue) {
+                // Our company only delivery to Toronto, Calgary, and Vancouver. Do not schedule a delivery to an unknown airport code
                 Console.WriteLine($"Order {order.orderNumber} has invalid destination");
                 continue;
             }
 
             Airport destination = order.requestedDestination.Value;
 
-            Console.WriteLine($"Destination {destination}");
-
             // Find existing flights to our destination with capacity
             ScheduledFlight? flight = scheduledFlights
-                .Where(flight => flight.destination == destination && flight.currentLoad < flight.capacity)
+                .Where(flight => flight.destination == destination && flight.Orders.Count < flight.capacity)
                 .FirstOrDefault();
-
-            Console.WriteLine($"Found Flight: {flight}");
 
             // If there are no more empty flights to our destination, and we have not used all our available planes, schedule a new flight
             if (flight == null && scheduledFlights.Count < availablePlanes) {
                 ScheduledFlight newFlight = new ScheduledFlight(
                     departure: Airport.YUL, 
                     destination: destination,
-                    date: 1);
+                    date: date);
 
                 scheduledFlights.Add(newFlight);
 
                 flight = newFlight;
             }
 
-            if (flight == null) {
-                unscheduledOrder.Add(order);
-                continue;
+            if (flight != null) {
+                flight?.AddOrder(order);
+            } else {
+                unscheduledOrders.Add(order);
             }
-
-            flight!.AddOrder(order);
-            scheduledOrders.Add(order);
         }
 
-        foreach (Order order in scheduledOrders) {
-            Console.WriteLine(order.ScheduledDescription());
-        }
-
-        foreach (Order order in unscheduledOrder) {
-            Console.WriteLine(order.ScheduledDescription());
-        }
+        return scheduledFlights;
     }
 }
