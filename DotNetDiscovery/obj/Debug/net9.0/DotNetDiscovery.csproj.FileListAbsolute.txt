@@ -1,0 +1,14 @@
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/bin/Debug/net9.0/DotNetDiscovery
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/bin/Debug/net9.0/DotNetDiscovery.deps.json
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/bin/Debug/net9.0/DotNetDiscovery.runtimeconfig.json
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/bin/Debug/net9.0/DotNetDiscovery.dll
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/bin/Debug/net9.0/DotNetDiscovery.pdb
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.GeneratedMSBuildEditorConfig.editorconfig
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.AssemblyInfoInputs.cache
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.AssemblyInfo.cs
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.csproj.CoreCompileInputs.cache
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.dll
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/refint/DotNetDiscovery.dll
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.pdb
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/DotNetDiscovery.genruntimeconfig.cache
+/Users/justinlycklama/Repositories/Personal/dotNetDiscovery/DotNetDiscovery/obj/Debug/net9.0/ref/DotNetDiscovery.dll
