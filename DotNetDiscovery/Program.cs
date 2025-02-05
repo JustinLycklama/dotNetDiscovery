@@ -26,13 +26,21 @@ class SpeedyAir {
 
         // Given no format for flight schedule data is given, I assume this means to load the given Scenario into memory.
 
-        ScheduledFlight.ResetFlightNumbers();
-        List<ScheduledFlight> flights = flightService.LoadScenarioOne();
 
-        Console.WriteLine(" --- Scenario Flight Schedule --- ");
-        foreach (ScheduledFlight flight in flights) {
-            Console.WriteLine(flight.Description());
-        }
+        Action<List<ScheduledFlight>> callback = (flights) => {
+            Console.WriteLine(" --- Scenario Flight Schedule --- ");
+            foreach (var flight in flights) {
+                Console.WriteLine(flight.Description());
+            }
+        };
+
+        ScheduledFlight.ResetFlightNumbers();
+        flightService.LoadScenarioOne(callback);
+
+        // Console.WriteLine(" --- Scenario Flight Schedule --- ");
+        // foreach (ScheduledFlight flight in flights) {
+        //     Console.WriteLine(flight.Description());
+        // }
     }
 
     public void GenerateFlightItineraries() {
@@ -85,27 +93,27 @@ class SpeedyAir {
                 continue;
             }
 
-            Airport destination = order.requestedDestination.Value;
+            Airport orderDestination = order.requestedDestination.Value;
 
             // Find existing flights to our destination with capacity
-            ScheduledFlight? flight = scheduledFlights
-                .Where(flight => flight.destination == destination && flight.Orders.Count < flight.capacity)
+            ScheduledFlight? availableFlight = scheduledFlights
+                .Where(flight => flight.destination == orderDestination && flight.Orders.Count < flight.capacity)
                 .FirstOrDefault();
 
-            // If there are no more empty flights to our destination, and we have not used all our available planes, schedule a new flight
-            if (flight == null && scheduledFlights.Count < availablePlanes) {
+            // If there are no more empty flights to our destination, but we have not used all our available planes, schedule a new flight
+            if (availableFlight == null && scheduledFlights.Count < availablePlanes) {
                 ScheduledFlight newFlight = new ScheduledFlight(
                     departure: Airport.YUL, 
-                    destination: destination,
+                    destination: orderDestination,
                     date: date);
 
                 scheduledFlights.Add(newFlight);
 
-                flight = newFlight;
+                availableFlight = newFlight;
             }
 
-            if (flight != null) {
-                flight?.AddOrder(order);
+            if (availableFlight != null) {
+                availableFlight.AddOrder(order);
             } else {
                 unscheduledOrders.Add(order);
             }

@@ -1,13 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 // Separate our business logic from data retrieval with a service
 class FlightService {
 
     // This would be replaced with an API call or some async action to fetch data
-       public List<ScheduledFlight> LoadScenarioOne() {
-
+    public void LoadScenarioOne(Action<List<ScheduledFlight>> completion) {
         // Our first scenario has orders from YUL that are sending boxes to Toronto, Calgary, and Vancouver,
         var dayOne = new List<Airport>{ Airport.YYZ, Airport.YYC, Airport.YVR };
         var dayTwo = new List<Airport>{ Airport.YYZ, Airport.YYC, Airport.YVR };
-     
+
         List<ScheduledFlight> flights = new List<ScheduledFlight>();
 
         foreach (Airport destination in dayOne) {
@@ -26,6 +29,7 @@ class FlightService {
             ));
         }
 
-        return flights;
+        // Call the completion callback with the result
+        completion(flights);
     }
 }
